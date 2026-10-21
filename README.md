@@ -67,7 +67,3 @@ Organisation classique en couches :
 - `model` : entites (geo, election)
 
 Point d'entree : `CiviscopeApplication.java`.
-
-## Auteur
-
-Raphael Angoula - depot GitHub : [controle-continue](https://github.com/angoularaphael/controle-continue)
