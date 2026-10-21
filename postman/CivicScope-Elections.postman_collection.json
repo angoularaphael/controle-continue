@@ -1,0 +1,164 @@
+{
+	"info": {
+		"name": "CivicScope Elections TP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "leg2024Id",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "1 GET elections",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseUrl}}/elections"
+			}
+		},
+		{
+			"name": "2 GET PRES2024 by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseUrl}}/elections/f41a37a7-1ea7-484f-b629-869f18f9637d"
+			}
+		},
+		{
+			"name": "3 GET unknown id 404",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseUrl}}/elections/00000000-0000-0000-0000-000000000000"
+			}
+		},
+		{
+			"name": "4 POST LEG2024",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"  pm.collectionVariables.set('leg2024Id', pm.response.json().id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"code\": \"LEG2024\",\n  \"date\": \"2024-11-17\",\n  \"typeElection\": \"LEGISLATIVE\",\n  \"tourElection\": \"TOUR_UNIQUE\",\n  \"codePays\": \"SN\"\n}"
+				},
+				"url": "{{baseUrl}}/elections"
+			}
+		},
+		{
+			"name": "5 POST LEG2024 duplicate 409",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"code\": \"LEG2024\",\n  \"date\": \"2024-11-17\",\n  \"typeElection\": \"LEGISLATIVE\",\n  \"tourElection\": \"TOUR_UNIQUE\",\n  \"codePays\": \"SN\"\n}"
+				},
+				"url": "{{baseUrl}}/elections"
+			}
+		},
+		{
+			"name": "6 POST PRES2024-BIS conflict 409",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"code\": \"PRES2024-BIS\",\n  \"date\": \"2024-12-01\",\n  \"typeElection\": \"PRESIDENTIELLE\",\n  \"tourElection\": \"PREMIER_TOUR\",\n  \"codePays\": \"SN\"\n}"
+				},
+				"url": "{{baseUrl}}/elections"
+			}
+		},
+		{
+			"name": "7 POST without date 400",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"code\": \"INVALID\",\n  \"typeElection\": \"LEGISLATIVE\"\n}"
+				},
+				"url": "{{baseUrl}}/elections"
+			}
+		},
+		{
+			"name": "8 GET elections limit=2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseUrl}}/elections?limit=2"
+			}
+		},
+		{
+			"name": "9 PUT LEG2024 tour PREMIER_TOUR",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"code\": \"LEG2024\",\n  \"date\": \"2024-11-17\",\n  \"typeElection\": \"LEGISLATIVE\",\n  \"tourElection\": \"PREMIER_TOUR\",\n  \"codePays\": \"SN\"\n}"
+				},
+				"url": "{{baseUrl}}/elections/{{leg2024Id}}"
+			}
+		},
+		{
+			"name": "10 DELETE LEG2024",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "{{baseUrl}}/elections/{{leg2024Id}}"
+			}
+		},
+		{
+			"name": "10b GET LEG2024 after delete 404",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseUrl}}/elections/{{leg2024Id}}"
+			}
+		}
+	]
+}
